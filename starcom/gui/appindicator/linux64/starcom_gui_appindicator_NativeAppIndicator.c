@@ -1,12 +1,13 @@
 #include <jni.h>
 #include <stdio.h>
-#include "starcom_gui_appindicator_NativeAppIndicator.h"
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
+#include "starcom_gui_appindicator_NativeAppIndicator.h"
 
 GError *error = NULL;
 
 static JavaVM *j_vm;
+static AppIndicator *indicator;
 
 static void activate_action (GtkAction *action)
 {
@@ -45,34 +46,33 @@ static void activate_action (GtkAction *action)
   }
 }
 
-void makeMenu(JNIEnv *env, jobjectArray objArr, jstring objStr, jstring iconFileName)
+void makeMenu(JNIEnv *env, jstring appName, jobjectArray objArr, jstring objStr, jstring iconFileName, jstring attIconFileName)
 {
   jsize len = (*env)->GetArrayLength(env, objArr);
   if (len <= 0) { return; }
-  int entriesLength = len/3;
+  int entriesLength = len/2;
   GtkActionGroup *action_group = gtk_action_group_new ("AppActions");
   GtkActionEntry gtkEntries[entriesLength];
   for (int i=0; i<entriesLength; i++)
   {
-    jobject curActNameO = (*env)->GetObjectArrayElement(env, objArr, i*3);
+    jobject curActNameO = (*env)->GetObjectArrayElement(env, objArr, i*2);
     const char* curActName = (*env)->GetStringUTFChars(env, curActNameO, 0);
-    jobject curIcFileO = (*env)->GetObjectArrayElement(env, objArr, i*3 + 1);
+    jobject curIcFileO = (*env)->GetObjectArrayElement(env, objArr, i*2 + 1);
     const char* curIcFile = (*env)->GetStringUTFChars(env, curIcFileO, 0);
-    jobject curTextO = (*env)->GetObjectArrayElement(env, objArr, i*3 + 2);
-    const char* curText = (*env)->GetStringUTFChars(env, curTextO, 0);
-
     
     gtkEntries[i] = (GtkActionEntry)
     {
-      curActName, curIcFile, curActName, NULL, curText, G_CALLBACK (activate_action)
+      curActName, curIcFile, curActName, NULL, curActName, G_CALLBACK (activate_action)
     };
   }
   gtk_action_group_add_actions (action_group,
                                 gtkEntries, entriesLength,
                                 NULL);
   
+  const char* appNameC = (*env)->GetStringUTFChars(env, appName, 0);
   const char* objStrC = (*env)->GetStringUTFChars(env, objStr, 0);
   const char* iconFileNameC = (*env)->GetStringUTFChars(env, iconFileName, 0);
+  const char* attIconFileNameC = (*env)->GetStringUTFChars(env, attIconFileName, 0);
   
   GtkUIManager *uim = gtk_ui_manager_new ();
   gtk_ui_manager_insert_action_group (uim, action_group, 0);
@@ -83,17 +83,17 @@ void makeMenu(JNIEnv *env, jobjectArray objArr, jstring objStr, jstring iconFile
     g_error_free (error);
     error = NULL;
   }
-  AppIndicator *indicator = app_indicator_new ("example-simple-client",
+  indicator = app_indicator_new ("example-simple-client",
                                                iconFileNameC,
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
   
   GtkWidget *indicator_menu = gtk_ui_manager_get_widget (uim, "/ui/IndicatorPopup");
 
   app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
-  app_indicator_set_attention_icon (indicator, "indicator-messages-new");
+  app_indicator_set_attention_icon (indicator, attIconFileNameC);
 
+  app_indicator_set_title(indicator,appNameC);
   app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
-
   gtk_main ();
 }
 
@@ -117,9 +117,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     return JNI_VERSION_1_6;
 }
 
+// Implementation of native method upIcon() of NativeAppIndicator class
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_upIcons (JNIEnv *env, jobject j_obj, jstring iconFileName, jstring attIconFileName)
+{
+  const char* iconFileNameC = (*env)->GetStringUTFChars(env, iconFileName, 0);
+  const char* attIconFileNameC = (*env)->GetStringUTFChars(env, iconFileName, 0);
+  app_indicator_set_icon(indicator,iconFileNameC);
+  app_indicator_set_attention_icon (indicator, attIconFileNameC);
+}
+
 // Implementation of native method init() of NativeAppIndicator class
-JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_init (JNIEnv *env, jobject j_obj, jstring iconFileName, jobjectArray objArr, jstring objStr)
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_init (JNIEnv *env, jobject j_obj, jstring appName, jstring iconFileName, jstring attIconFileName, jobjectArray objArr, jstring objStr)
 {
   gtk_init (0, NULL);
-  makeMenu(env, objArr, objStr, iconFileName);
+  makeMenu(env, appName, objArr, objStr, iconFileName, attIconFileName);
 }

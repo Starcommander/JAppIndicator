@@ -6,8 +6,11 @@ A Systray Icon for java, using the AppIndicator that is popular on some linux wi
 
 Features
 * Tray icon
-* Menu
+* Simple menu
 * Fallback to SystemTray, if no AppIndicator supported on system.
 
 Limitations
 * Currently only Linux 64bit is supported.
+
+A feature-rich alternative:
+* SystemTray from Dorkbox --> https://github.com/dorkbox/SystemTray

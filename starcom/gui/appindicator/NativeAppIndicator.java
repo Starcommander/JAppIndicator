@@ -20,29 +20,32 @@ public class NativeAppIndicator
   public NativeAppIndicator() {}
   
   /** Init the TrayIcon and wait for quit.
-    * @param iconFile The absolute path to the app icon, used in SysTray (or a gtk-icon from theme).
-    * @param entries The menu-entries that are selectable from SysTray-Icon.
-    **/
-  public void initAndWait(String iconFile, MenuEntry entries[])
+   * @param iconFile The absolute path to the app icon, used in SysTray (or a gtk-icon from theme).
+   * @param attIconFile The Attention-Icon file.
+   * @param entries The menu-entries that are selectable from SysTray-Icon.
+   **/
+  public void initAndWait(String appName, String iconFile, String attIconFile, MenuEntry entries[])
   {
-    String entriesArr[] = new String[entries.length * 3];
+    String entriesArr[] = new String[entries.length * 2];
     StringBuilder entriesSb = new StringBuilder(UI_XML_START);
     for (int i=0; i<entries.length; i++)
     {
       MenuEntry entry = entries[i];
-      entriesArr[i*3] = entry.actionName;
-      entriesArr[i*3+1] = entry.iconKey;
-      entriesArr[i*3+2] = entry.text;
+      entriesArr[i*2] = entry.actionName;
+      entriesArr[i*2+1] = entry.iconKey;
       entriesSb.append(UI_XML_MID.replace("X",entry.actionName));
     }
     entriesSb.append(UI_XML_END);
-    init(iconFile, entriesArr, entriesSb.toString());
+    init(appName, iconFile, attIconFile, entriesArr, entriesSb.toString());
   }
   
-  private native void init(String iconFile, String[] entriesArr, String entriesStr);
+  public void updateIcons(String iconFile, String attIconFile) { upIcons(iconFile, attIconFile); }
+  
+  private native void init(String appName, String iconFile, String attIconFile, String[] entriesArr, String entriesStr);
+  private native void upIcons(String iconFile, String attIconFile);
   public static native void quit();
   
-  public static void menuPressed(String actionName)
+  private static void menuPressed(String actionName)
   {
     if (menuListener!=null) { menuListener.menuPressed(actionName); }
   }
