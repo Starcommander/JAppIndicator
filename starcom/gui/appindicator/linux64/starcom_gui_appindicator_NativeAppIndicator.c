@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <stdio.h>
-#include "NativeAppIndicator.h"
+#include "starcom_gui_appindicator_NativeAppIndicator.h"
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
 
@@ -14,7 +14,7 @@ static void activate_action (GtkAction *action)
   JNIEnv *j_env;
   (*j_vm)->GetEnv(j_vm, (void **)&j_env, JNI_VERSION_1_6);
   (*j_vm)->AttachCurrentThread(j_vm, (void **)&j_env, NULL);
-  jclass j_clazz = (*j_env)->FindClass(j_env, "NativeAppIndicator");
+  jclass j_clazz = (*j_env)->FindClass(j_env, "starcom/gui/appindicator/NativeAppIndicator");
   if (j_clazz != NULL)
   {
     jstring j_name = (*j_env)->NewStringUTF(j_env, name);
@@ -38,6 +38,10 @@ static void activate_action (GtkAction *action)
       (*j_env)->CallStaticVoidMethod(j_env, j_clazz, j_methodID, j_name); 
     }
     (*j_env)->DeleteLocalRef(j_env, j_name);
+  }
+  else
+  {
+    printf("NativeAppIndicator.c: No class of java found!\n");
   }
 }
 
@@ -94,7 +98,7 @@ void makeMenu(JNIEnv *env, jobjectArray objArr, jstring objStr, jstring iconFile
 }
 
 // Implementation of native method init() of NativeAppIndicator class
-JNIEXPORT void JNICALL Java_NativeAppIndicator_quit (JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quit (JNIEnv *env, jobject obj)
 {
   gtk_main_quit();
 }
@@ -114,7 +118,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 }
 
 // Implementation of native method init() of NativeAppIndicator class
-JNIEXPORT void JNICALL Java_NativeAppIndicator_init (JNIEnv *env, jobject j_obj, jstring iconFileName, jobjectArray objArr, jstring objStr)
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_init (JNIEnv *env, jobject j_obj, jstring iconFileName, jobjectArray objArr, jstring objStr)
 {
   gtk_init (0, NULL);
   makeMenu(env, objArr, objStr, iconFileName);

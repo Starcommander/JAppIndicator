@@ -1,22 +1,29 @@
-
-
+package starcom.gui.appindicator;
 
 public class NativeAppIndicator
 {
+  /** Set this listener to handle actions. **/
+  public static MenuListener menuListener;
+  
   static
   {
-    System.loadLibrary("NativeAppIndicator");
+    //System.loadLibrary("starcom.gui.appindicator.linux64.NativeAppIndicator");
+
+    System.loadLibrary("starcom_gui_appindicator_NativeAppIndicator");
   }
   
   private static String UI_XML_START = "<ui><popup name='IndicatorPopup'>";
   private static String UI_XML_MID = "<menuitem action='X'/>";
   private static String UI_XML_END = "</popup></ui>";
   
-  /** Creates a new NativeAppIndicator.
+  /** Creates a new NativeAppIndicator. **/
+  public NativeAppIndicator() {}
+  
+  /** Init the TrayIcon and wait for quit.
     * @param iconFile The absolute path to the app icon, used in SysTray (or a gtk-icon from theme).
     * @param entries The menu-entries that are selectable from SysTray-Icon.
     **/
-  public NativeAppIndicator(String iconFile, MenuEntry entries[])
+  public void initAndWait(String iconFile, MenuEntry entries[])
   {
     String entriesArr[] = new String[entries.length * 3];
     StringBuilder entriesSb = new StringBuilder(UI_XML_START);
@@ -33,22 +40,10 @@ public class NativeAppIndicator
   }
   
   private native void init(String iconFile, String[] entriesArr, String entriesStr);
-  private static native void quit();
+  public static native void quit();
   
-  public static void menuPressed(String name)
+  public static void menuPressed(String actionName)
   {
-    System.out.println("Java: Pressed: " + name);
-    if (name.equals("Quit")) { quit(); }
-  }
-  
-  public static void main (String args[])
-  {
-    MenuEntry entries[] = new MenuEntry[3];
-    entries[0] = new MenuEntry("Jitsi", "media-playback-start", "Show Jitsi");
-    entries[1] = new MenuEntry("Menu", "address-book-new", "Show menu");
-    entries[2] = new MenuEntry("Quit", "dialog-cancel", "Stopp app");
-    String iconFileX = "/usr/share/pixmaps/jitsi.svg";
-    String iconFile = "/home/ppp/delete/jitsi_CTray/appindicatorC/jnitest/icons/64x64/starcom-mesh.png";
-    new NativeAppIndicator(iconFileX, entries);
+    if (menuListener!=null) { menuListener.menuPressed(actionName); }
   }
 }

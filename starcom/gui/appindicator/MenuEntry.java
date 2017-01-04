@@ -1,4 +1,4 @@
-
+package starcom.gui.appindicator;
 
 public class MenuEntry
 {
