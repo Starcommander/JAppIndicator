@@ -11,6 +11,7 @@ Features
 
 Limitations
 * Currently only Linux 64bit is supported.
+* Linux 32bit is not tested yet.
 
 A feature-rich alternative:
 * SystemTray from Dorkbox --> https://github.com/dorkbox/SystemTray
