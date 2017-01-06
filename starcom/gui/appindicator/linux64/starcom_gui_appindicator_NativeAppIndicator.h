@@ -25,10 +25,10 @@ JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_upIcons
 
 /*
  * Class:     starcom_gui_appindicator_NativeAppIndicator
- * Method:    quit
+ * Method:    quitApp
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quit
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quitApp
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

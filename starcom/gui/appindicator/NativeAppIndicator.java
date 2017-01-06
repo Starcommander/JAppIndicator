@@ -1,17 +1,7 @@
 package starcom.gui.appindicator;
 
-public class NativeAppIndicator
+public class NativeAppIndicator extends AppIndicator
 {
-  /** Set this listener to handle actions. **/
-  public static MenuListener menuListener;
-  
-  static
-  {
-    //System.loadLibrary("starcom.gui.appindicator.linux64.NativeAppIndicator");
-
-    System.loadLibrary("starcom_gui_appindicator_NativeAppIndicator");
-  }
-  
   private static String UI_XML_START = "<ui><popup name='IndicatorPopup'>";
   private static String UI_XML_MID = "<menuitem action='X'/>";
   private static String UI_XML_END = "</popup></ui>";
@@ -19,12 +9,21 @@ public class NativeAppIndicator
   /** Creates a new NativeAppIndicator. **/
   public NativeAppIndicator() {}
   
-  /** Init the TrayIcon and wait for quit.
-   * @param iconFile The absolute path to the app icon, used in SysTray (or a gtk-icon from theme).
-   * @param attIconFile The Attention-Icon file.
-   * @param entries The menu-entries that are selectable from SysTray-Icon.
-   **/
-  public void initAndWait(String appName, String iconFile, String attIconFile, MenuEntry entries[])
+  @Override
+  public void initIndicator(final String appName, final String iconFile, final String attIconFile,final MenuEntry entries[])
+  {
+    Thread t = new Thread()
+    {
+      @Override
+      public void run()
+      {
+        initAndWait(appName, iconFile, attIconFile, entries);
+      }
+    };
+    t.start();
+  }
+  
+  private void initAndWait(String appName, String iconFile, String attIconFile, MenuEntry entries[])
   {
     String entriesArr[] = new String[entries.length * 2];
     StringBuilder entriesSb = new StringBuilder(UI_XML_START);
@@ -39,11 +38,16 @@ public class NativeAppIndicator
     init(appName, iconFile, attIconFile, entriesArr, entriesSb.toString());
   }
   
+  @Override
   public void updateIcons(String iconFile, String attIconFile) { upIcons(iconFile, attIconFile); }
   
   private native void init(String appName, String iconFile, String attIconFile, String[] entriesArr, String entriesStr);
   private native void upIcons(String iconFile, String attIconFile);
-  public static native void quit();
+  
+  @Override
+  public void quit() { quitApp(); }
+  
+  private static native void quitApp();
   
   private static void menuPressed(String actionName)
   {

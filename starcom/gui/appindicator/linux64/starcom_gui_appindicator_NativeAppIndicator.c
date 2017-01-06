@@ -98,7 +98,7 @@ void makeMenu(JNIEnv *env, jstring appName, jobjectArray objArr, jstring objStr,
 }
 
 // Implementation of native method init() of NativeAppIndicator class
-JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quit (JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quitApp (JNIEnv *env, jobject obj)
 {
   gtk_main_quit();
 }

@@ -9,9 +9,13 @@ Features
 * Simple menu
 * Fallback to SystemTray, if no AppIndicator supported on system.
 
-Limitations
-* Currently only Linux 64bit is supported.
-* Linux 32bit is not tested yet.
+Operating Systems
+* Currently only Linux 64bit is tested.
+* Linux 32bit ready. (not tested yet)
+* On MS Windows, MacOs and others fallback to AWT TrayIcon (not tested yet)
+
+An easy example is available here:
+* starcom/gui/appindicator/test/TestAppIndicator.java
 
 A feature-rich alternative:
 * SystemTray from Dorkbox --> https://github.com/dorkbox/SystemTray

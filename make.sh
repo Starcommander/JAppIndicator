@@ -44,7 +44,7 @@ elif [ "$1" = "c32" ]; then
   get_libs32
   gcc $HEAD_JDK $HEAD_LINUX -shared -o $PDIR/linux32/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
 elif [ "$1" = "start" ]; then
-  java -Djava.library.path=./$PDIR/linux64/ $PDIR/test/TestAppIndicator
+  java $PDIR/test/TestAppIndicator
 else
   echo "Usage $0 j|c|c32|start"
 fi
