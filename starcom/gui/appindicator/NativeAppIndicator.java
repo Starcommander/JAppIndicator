@@ -1,5 +1,7 @@
 package starcom.gui.appindicator;
 
+import java.io.File;
+
 public class NativeAppIndicator extends AppIndicator
 {
   private static String UI_XML_START = "<ui><popup name='IndicatorPopup'>";
@@ -17,10 +19,26 @@ public class NativeAppIndicator extends AppIndicator
       @Override
       public void run()
       {
-        initAndWait(appName, iconFile, attIconFile, entries);
+        String trayIconFile = validateIcon(iconFile);
+        String trayAttIconFile = validateIcon(attIconFile);
+        initAndWait(appName, trayIconFile, trayAttIconFile, entries);
       }
+
     };
     t.start();
+  }
+  
+  private String validateIcon(String iconFileS)
+  {
+    File iconFile = new File(iconFileS);
+    if (iconFile.exists())
+    {
+      if (!iconFile.isAbsolute())
+      {
+        iconFileS = iconFile.getAbsolutePath();
+      }
+    }
+    return iconFileS;
   }
   
   private void initAndWait(String appName, String iconFile, String attIconFile, MenuEntry entries[])
@@ -39,7 +57,12 @@ public class NativeAppIndicator extends AppIndicator
   }
   
   @Override
-  public void updateIcons(String iconFile, String attIconFile) { upIcons(iconFile, attIconFile); }
+  public void updateIcons(String iconFile, String attIconFile)
+  {
+    iconFile = validateIcon(iconFile);
+    attIconFile = validateIcon(attIconFile);
+    upIcons(iconFile, attIconFile);
+  }
   
   private native void init(String appName, String iconFile, String attIconFile, String[] entriesArr, String entriesStr);
   private native void upIcons(String iconFile, String attIconFile);

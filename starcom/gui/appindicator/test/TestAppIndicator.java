@@ -3,11 +3,11 @@ package starcom.gui.appindicator.test;
 import starcom.gui.appindicator.AppIndicator;
 import starcom.gui.appindicator.MenuEntry;
 import starcom.gui.appindicator.MenuListener;
+import starcom.gui.appindicator.icons.CompatibleIcon;
 
 /** A simple test class. **/
 public class TestAppIndicator
 {
-  static String user_dir = System.getProperty("user.dir");
   AppIndicator appIndicator;
   String iconFile;
   String attIconFile;
@@ -17,11 +17,11 @@ public class TestAppIndicator
   {
     AppIndicator.menuListener = createMenuListener();
     MenuEntry entries[] = new MenuEntry[3];
-    entries[0] = new MenuEntry("App", "media-playback-start");
-    entries[1] = new MenuEntry("Menu", "address-book-new");
-    entries[2] = new MenuEntry("Quit", "dialog-cancel");
-    iconFile = user_dir + "/starcom/gui/appindicator/icons/starcom-mesh-gray.png";
-    attIconFile = user_dir + "/starcom/gui/appindicator/icons/starcom-mesh.png";
+    entries[0] = new MenuEntry("App", new CompatibleIcon(CompatibleIcon.IconName.media_playback_start));
+    entries[1] = new MenuEntry("Menu", new CompatibleIcon(CompatibleIcon.IconName.input_mouse));
+    entries[2] = new MenuEntry("Quit", new CompatibleIcon(CompatibleIcon.IconName.window_close));
+    iconFile = "starcom/gui/appindicator/icons/starcom-mesh-gray.png";
+    attIconFile = "starcom/gui/appindicator/icons/starcom-mesh.png";
     appIndicator = AppIndicator.create();
     appIndicator.initIndicator("My app", iconFile, attIconFile, entries);
   }
