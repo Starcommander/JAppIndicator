@@ -1,11 +1,7 @@
 package starcom.system;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.StandardCopyOption;
-
-import starcom.file.Path;
+import starcom.file.ResourceExporter;
 
 public class LibPath
 {
@@ -23,15 +19,12 @@ public class LibPath
       File libFile = new File(libFileS);
       if (!libFile.exists())
       {
-        libFileS = Path.createTempDir(null, "JAppIndicator");
-        libFileS = Path.combine(libFileS, new File(localFile).getName());
-        libFile = new File(libFileS);
-        InputStream srcLib = LibPath.class.getResourceAsStream("/" + localFile);
         try
         {
-          java.nio.file.Files.copy(srcLib, libFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+          libFileS = ResourceExporter.exportResourceTmp(libFileS);
+          libFile = new File(libFileS);
         }
-        catch (IOException e)
+        catch (NullPointerException e)
         {
           e.printStackTrace();
         }

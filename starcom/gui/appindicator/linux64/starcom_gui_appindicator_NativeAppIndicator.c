@@ -97,7 +97,7 @@ void makeMenu(JNIEnv *env, jstring appName, jobjectArray objArr, jstring objStr,
   gtk_main ();
 }
 
-// Implementation of native method init() of NativeAppIndicator class
+// Implementation of native method quitApp() of NativeAppIndicator class
 JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_quitApp (JNIEnv *env, jobject obj)
 {
   gtk_main_quit();
@@ -117,7 +117,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     return JNI_VERSION_1_6;
 }
 
-// Implementation of native method upIcon() of NativeAppIndicator class
+// Implementation of native method upIcons() of NativeAppIndicator class
 JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_upIcons (JNIEnv *env, jobject j_obj, jstring iconFileName, jstring attIconFileName)
 {
   const char* iconFileNameC = (*env)->GetStringUTFChars(env, iconFileName, 0);

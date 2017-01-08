@@ -4,6 +4,7 @@ import java.io.File;
 
 public class Path
 {
+  /** Combines paths/file.txt with File.separator **/
   public static String combine(String... paths)
   {
     StringBuilder sb = new StringBuilder();

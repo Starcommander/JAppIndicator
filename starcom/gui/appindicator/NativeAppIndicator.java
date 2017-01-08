@@ -2,6 +2,9 @@ package starcom.gui.appindicator;
 
 import java.io.File;
 
+import starcom.file.ResourceExporter;
+import starcom.gui.appindicator.icons.CompatibleIcon;
+
 public class NativeAppIndicator extends AppIndicator
 {
   private static String UI_XML_START = "<ui><popup name='IndicatorPopup'>";
@@ -36,6 +39,17 @@ public class NativeAppIndicator extends AppIndicator
       if (!iconFile.isAbsolute())
       {
         iconFileS = iconFile.getAbsolutePath();
+      }
+    }
+    else
+    {
+      try
+      {
+        CompatibleIcon.IconName.valueOf(iconFileS);
+      }
+      catch (Exception e)
+      { // Worst case, Icon is not a CompatibleIcon, and does not exist.
+        return ResourceExporter.exportResourceTmp(iconFileS);
       }
     }
     return iconFileS;

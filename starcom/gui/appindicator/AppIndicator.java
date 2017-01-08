@@ -9,8 +9,9 @@ public abstract class AppIndicator
   
   /**
    * Init the TrayIcon.
-   * <br/>Each icon must exist as file.
+   * <br/>Each icon should exist as file.
    * <br/>Alternatively you can use CompatibleIcon(I).getIconName()
+   * <br/>In worst case the icon is bundled in jar, this may create temporary files.
    * @param iconFile The path to the app icon.
    * @param attIconFile The Attention-Icon file.
    * @param entries The menu-entries that are selectable from SysTray-Icon.
@@ -18,9 +19,10 @@ public abstract class AppIndicator
   public abstract void initIndicator(String appName, String iconFile, String attIconFile, MenuEntry entries[]);
   
   /**
-   * Update the icon of Tray.
-   * <br/>Each icon must exist as file.
+   * Update the icons of Tray.
+   * <br/>Each icon should exist as file.
    * <br/>Alternatively you can use CompatibleIcon(I).getIconName()
+   * <br/>In worst case the icon is bundled in jar, this may create temporary files.
    * @param iconFile The absolute path to the app icon.
    * @param attIconFile The Attention-Icon file.
    **/
