@@ -12,7 +12,7 @@ public class ResourceExporter
   
   /** Exports a resource from bundled jar, and marks for delete on shutdown.
    * @param resourcePath The local path to file.
-   * <br/>Example: "starcom/file/file.txt"
+   * <br/>Example: "starcom/file/file.png"
    * @return The new temp file. **/
   public static String exportResourceTmp(String resourcePath)
   {
@@ -22,8 +22,7 @@ public class ResourceExporter
     {
       String ext = resourcePath.substring(resourcePath.lastIndexOf('.'), resourcePath.length());
       File tmpFile = File.createTempFile("JAppIndicator", ext);
-      InputStream srcLib = ResourceExporter.class.getResourceAsStream("/" + resourcePath);
-      java.nio.file.Files.copy(srcLib, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      exportResource(resourcePath, tmpFile);
       tmpFile.deleteOnExit();
       return tmpFile.getPath();
     }
@@ -32,5 +31,20 @@ public class ResourceExporter
       e.printStackTrace();
     }
     return null;
+  }
+  
+  public static boolean exportResource(String resourcePath, File targetFile)
+  {
+    try
+    {
+      InputStream srcLib = ResourceExporter.class.getResourceAsStream("/" + resourcePath);
+      java.nio.file.Files.copy(srcLib, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
 }
