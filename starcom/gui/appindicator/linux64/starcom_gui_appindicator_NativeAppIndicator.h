@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     starcom_gui_appindicator_NativeAppIndicator
  * Method:    init
- * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_starcom_gui_appindicator_NativeAppIndicator_init
   (JNIEnv *, jobject, jstring, jstring, jstring, jobjectArray, jstring);

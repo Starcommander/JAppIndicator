@@ -1,6 +1,7 @@
 package starcom.gui.appindicator;
 
 import java.awt.AWTException;
+import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.TrayIcon;
@@ -10,12 +11,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import starcom.file.Path;
+import starcom.gui.appindicator.icons.CompatibleIcon;
 
 public class SwingAppIndicator extends AppIndicator
 {
@@ -29,6 +32,7 @@ public class SwingAppIndicator extends AppIndicator
     trayMenu = createPopup(entries);
     trayMenu.addMouseListener(createHideListener());
     trayIcon = new TrayIcon(findResource(iconFile, false).getImage(), appName);
+    trayIcon.setImageAutoSize(true);
     trayIcon.addActionListener(createActionListener());
     addIcon(true);
   }
@@ -36,19 +40,18 @@ public class SwingAppIndicator extends AppIndicator
   ImageIcon findResource(String iconFileS, boolean forcedName)
   {
     File iconFile = new File(iconFileS);
-    if (forcedName || !iconFile.exists())
+    if ((!forcedName) && iconFile.isFile())
     {
-      iconFileS = Path.combine(ICON_DIR,iconFileS) + ".png";
+      Image ic = new ImageIcon(iconFileS).getImage();
+      return new ImageIcon(ic.getScaledInstance(32, 32, Image.SCALE_DEFAULT));
+    }
+    else if (Arrays.asList(CompatibleIcon.getIconNameValues()).contains(iconFileS))
+    {
+      iconFileS = Path.combine(ICON_DIR,iconFileS.replace('-', '_')) + ".png";
       iconFile = new File(iconFileS);
     }
-    if (iconFile.isAbsolute())
-    {
-      return new ImageIcon(iconFileS);
-    }
-    else
-    {
-      return new ImageIcon(SwingAppIndicator.class.getResource(iconFileS));
-    }
+    Image ic = new ImageIcon(SwingAppIndicator.class.getResource("/"+iconFileS)).getImage();
+    return new ImageIcon(ic.getScaledInstance(32, 32, Image.SCALE_DEFAULT));
   }
 
   private MouseListener createHideListener()
@@ -103,16 +106,35 @@ public class SwingAppIndicator extends AppIndicator
 
   private JPopupMenu createPopup(MenuEntry[] entries)
   {
-    JPopupMenu menu = new JPopupMenu();
     ActionListener menuListener = createMenuListener();
+    JPopupMenu menu = createSubMenu(null, entries, menuListener);
+    return menu;
+  }
+
+  /** Adds to subMenu, or returns a new JPopupMenu, if subMenu is null. **/
+  private JPopupMenu createSubMenu(JPopupMenu subMenu, MenuEntry[] entries, ActionListener listener)
+  {
+    JPopupMenu popMenu = null;
+    if (subMenu == null) { popMenu = new JPopupMenu(); }
     for (MenuEntry entry : entries)
     {
-      JMenuItem menuItem = new JMenuItem(entry.actionName, findResource(entry.iconKey, true));
-      menuItem.addActionListener(menuListener);
-      menu.add(menuItem);
+      if (entry.subEntries!=null)
+      {
+        JPopupMenu xsubMenu = new JPopupMenu(entry.actionName);
+        createSubMenu(xsubMenu, entry.subEntries, listener);
+        if (popMenu != null) { popMenu.add(xsubMenu); }
+        else { subMenu.add(xsubMenu); }
+      }
+      else
+      {
+        JMenuItem menuItem = new JMenuItem(entry.actionName, findResource(entry.iconKey, true));
+        menuItem.addActionListener(listener);
+        if (popMenu != null) { popMenu.add(menuItem); }
+        else { subMenu.add(menuItem);
+        }
+      }
     }
-    
-    return menu;
+    return popMenu;
   }
 
   private ActionListener createMenuListener()

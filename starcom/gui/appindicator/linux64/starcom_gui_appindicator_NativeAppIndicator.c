@@ -46,18 +46,31 @@ static void activate_action (GtkAction *action)
   }
 }
 
+// fieldPackage may be "Ljava/lang$String;"
+jobject getFieldFromObject(JNIEnv *env, jobject obj, const char * fieldPackage, const char * fieldName)
+{
+    jfieldID fid;
+    jclass cls = (*env)->GetObjectClass(env, obj);
+
+    fid = (*env)->GetFieldID(env, cls, fieldName, fieldPackage);
+    jobject fob = (*env)->GetObjectField(env, obj, fid);
+    return fob;
+}
+
 void makeMenu(JNIEnv *env, jstring appName, jobjectArray objArr, jstring objStr, jstring iconFileName, jstring attIconFileName)
 {
   jsize len = (*env)->GetArrayLength(env, objArr);
   if (len <= 0) { return; }
-  int entriesLength = len/2;
+  int entriesLength = len;
   GtkActionGroup *action_group = gtk_action_group_new ("AppActions");
   GtkActionEntry gtkEntries[entriesLength];
   for (int i=0; i<entriesLength; i++)
   {
-    jobject curActNameO = (*env)->GetObjectArrayElement(env, objArr, i*2);
+    jobject curMenuO = (*env)->GetObjectArrayElement(env, objArr, i);
+    jobject curActNameO = getFieldFromObject(env, curMenuO, "Ljava/lang/String;", "actionName");
+
     const char* curActName = (*env)->GetStringUTFChars(env, curActNameO, 0);
-    jobject curIcFileO = (*env)->GetObjectArrayElement(env, objArr, i*2 + 1);
+    jobject curIcFileO = getFieldFromObject(env, curMenuO, "Ljava/lang/String;", "iconKey");
     const char* curIcFile = (*env)->GetStringUTFChars(env, curIcFileO, 0);
     
     gtkEntries[i] = (GtkActionEntry)

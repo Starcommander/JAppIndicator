@@ -1,6 +1,7 @@
 package starcom.gui.appindicator;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import starcom.file.ResourceExporter;
 import starcom.gui.appindicator.icons.CompatibleIcon;
@@ -9,6 +10,7 @@ public class NativeAppIndicator extends AppIndicator
 {
   private static String UI_XML_START = "<ui><popup name='IndicatorPopup'>";
   private static String UI_XML_MID = "<menuitem action='X'/>";
+  private static String UI_XML_SUB = "<menu action='X'>";
   private static String UI_XML_END = "</popup></ui>";
   
   /** Creates a new NativeAppIndicator. **/
@@ -57,19 +59,33 @@ public class NativeAppIndicator extends AppIndicator
   
   private void initAndWait(String appName, String iconFile, String attIconFile, MenuEntry entries[])
   {
-    String entriesArr[] = new String[entries.length * 2];
+    ArrayList<MenuEntry> allEntries = new ArrayList<MenuEntry>();
     StringBuilder entriesSb = new StringBuilder(UI_XML_START);
+    buildMenus(entries, allEntries, entriesSb);
+
+    entriesSb.append(UI_XML_END);
+    init(appName, iconFile, attIconFile, allEntries.toArray(), entriesSb.toString());
+  }
+  
+  private void buildMenus(MenuEntry entries[], ArrayList<MenuEntry> allEntries, StringBuilder entriesSb)
+  {
     for (int i=0; i<entries.length; i++)
     {
       MenuEntry entry = entries[i];
-      entriesArr[i*2] = entry.actionName;
-      entriesArr[i*2+1] = entry.iconKey;
-      entriesSb.append(UI_XML_MID.replace("X",entry.actionName));
+      allEntries.add(entry);
+      if (entry.subEntries!=null)
+      {
+        entriesSb.append(UI_XML_SUB.replace("X",entry.actionName));
+        buildMenus(entry.subEntries, allEntries, entriesSb);
+        entriesSb.append("</menu>");
+      }
+      else
+      {
+        entriesSb.append(UI_XML_MID.replace("X",entry.actionName));
+      }
     }
-    entriesSb.append(UI_XML_END);
-    init(appName, iconFile, attIconFile, entriesArr, entriesSb.toString());
   }
-  
+
   @Override
   public void updateIcons(String iconFile, String attIconFile)
   {
@@ -78,7 +94,7 @@ public class NativeAppIndicator extends AppIndicator
     upIcons(iconFile, attIconFile);
   }
   
-  private native void init(String appName, String iconFile, String attIconFile, String[] entriesArr, String entriesStr);
+  private native void init(String appName, String iconFile, String attIconFile, Object[] entriesArr, String entriesStr);
   private native void upIcons(String iconFile, String attIconFile);
   
   @Override

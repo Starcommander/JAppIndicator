@@ -34,6 +34,23 @@ get_libs64()
   HEAD_JDK="-I\"/usr/lib/jvm/java-8-openjdk-amd64/include/\" -I\"/usr/lib/jvm/java-8-openjdk-amd64/include/linux/\""
 }
 
+makeJar()
+{
+  local tmp_dir=$(mktemp -d)
+  local cur_dir=$(pwd)
+  mkdir -p bin
+  cp -r starcom "$tmp_dir/"
+  find "$tmp_dir/" -name "*.java" -exec rm '{}' \;
+  mkdir "$tmp_dir/META-INF"
+  echo "Manifest-Version: 1.0" > "$tmp_dir/META-INF/MANIFEST.MF"
+  echo "Created-By: 1.8 java" >> "$tmp_dir/META-INF/MANIFEST.MF"
+  echo "Main-Class: starcom.gui.appindicator.test.TestAppIndicator" >> "$tmp_dir/META-INF/MANIFEST.MF"
+  cd "$tmp_dir"
+  zip -r "$cur_dir/bin/JAppIndicator.jar" "./"
+  cd "$cur_dir"
+  rm -r "$tmp_dir"
+}
+
 if [ "$1" = "j" ]; then
   javac $(find starcom -name "*.java")
   javah -d $PDIR/linux64/ $(echo $PDIR/NativeAppIndicator | tr '/' '.')
@@ -45,6 +62,13 @@ elif [ "$1" = "c32" ]; then
   gcc $HEAD_JDK $HEAD_LINUX -shared -o $PDIR/linux32/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
 elif [ "$1" = "start" ]; then
   java $PDIR/test/TestAppIndicator
+elif [ "$1" = "jar" ]; then
+  makeJar
 else
-  echo "Usage $0 j|c|c32|start"
+  echo "========== Usage: ============="
+  echo "Compile java:     $0 j"
+  echo "Compile c 64 bit: $0 c"
+  echo "Compile c 32 bit: $0 c32"
+  echo "Pack to jar:      $0 jar"
+  echo "Start testapp:    $0 start"
 fi

@@ -6,6 +6,7 @@ public class MenuEntry
 {
   String actionName;
   String iconKey;
+  MenuEntry subEntries[];
 
   /** Creates a new MenuEntry.
     * @param actionName The name for the menuentry.
@@ -16,4 +17,6 @@ public class MenuEntry
     this.actionName = actionName;
     this.iconKey = iconKey.getIconName();
   }
+  
+  public void setSubEntries(MenuEntry subEntries[]) { this.subEntries = subEntries; }
 }

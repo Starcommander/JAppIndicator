@@ -4,6 +4,8 @@ A Systray Icon for java, using the AppIndicator that is popular on some linux wi
 * Keep it simple, no extra java libs necessary
 * Used headers: gtk.h, jni.h, app-indicator.h, and stdio.h
 
+![Screenshot](doc/Screenshot001.png)
+
 Features
 * Tray icon
 * Simple menu
