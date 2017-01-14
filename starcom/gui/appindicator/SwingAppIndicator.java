@@ -147,7 +147,7 @@ public class SwingAppIndicator extends AppIndicator
         if (menuListener!=null)
         {
           String actionName  = ((JMenuItem)e.getSource()).getText();
-          menuListener.menuPressed(actionName);
+          menuListener.menuPressed(actionName, null);
         }
         trayMenu.setVisible(false);
       }
@@ -156,7 +156,7 @@ public class SwingAppIndicator extends AppIndicator
   }
 
   @Override
-  public void updateIcons(String iconFile, String attIconFile)
+  public void updateIcons(String iconFile, String attIconFile, Object activity)
   {
     trayIcon.setImage(findResource(iconFile, false).getImage());
   }

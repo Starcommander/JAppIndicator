@@ -87,7 +87,7 @@ public class NativeAppIndicator extends AppIndicator
   }
 
   @Override
-  public void updateIcons(String iconFile, String attIconFile)
+  public void updateIcons(String iconFile, String attIconFile, Object activity)
   {
     iconFile = validateIcon(iconFile);
     attIconFile = validateIcon(attIconFile);
@@ -104,6 +104,6 @@ public class NativeAppIndicator extends AppIndicator
   
   private static void menuPressed(String actionName)
   {
-    if (menuListener!=null) { menuListener.menuPressed(actionName); }
+    if (menuListener!=null) { menuListener.menuPressed(actionName, null); }
   }
 }

@@ -28,8 +28,9 @@ public abstract class AppIndicator
    * <br/>In worst case the icon is bundled in jar, this may create temporary files.
    * @param iconFile The absolute path to the app icon.
    * @param attIconFile The Attention-Icon file.
+   * @param activity May be null, on Android Activity is used.
    **/
-  public abstract void updateIcons(String iconFile, String attIconFile);
+  public abstract void updateIcons(String iconFile, String attIconFile, Object activity);
 
   /** Dispose Tray-Icon **/
   public abstract void quit();
