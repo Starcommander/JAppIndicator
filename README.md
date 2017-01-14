@@ -10,8 +10,10 @@ Supported Operating Systems
 * Android (Notification and ListView)
 
 An easy example is available here:
-* starcom/gui/appindicator/test/TestAppIndicator.java
+* src_Desktop/src/starcom/gui/appindicator/test/TestAppIndicator.java
+* src_Android/src/starcom/gui/appindicator/test/TestAppIndicatorAndroid.java
 * You can also execute bin/JAppIndicator.jar
+* Or try out bin/JAppIndicator.apk on Android
 
 Features
 * Tray icon
