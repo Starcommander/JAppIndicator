@@ -6,6 +6,7 @@
 #       c32 to compile c 32bit
 #       start to start demo
 
+SDIR="src_Desktop/src"
 PDIR="starcom/gui/appindicator"
 
 get_libs32()
@@ -39,7 +40,7 @@ makeJar()
   local tmp_dir=$(mktemp -d)
   local cur_dir=$(pwd)
   mkdir -p bin
-  cp -r starcom "$tmp_dir/"
+  cp -r "$SDIR/starcom" "$tmp_dir/"
   find "$tmp_dir/" -name "*.java" -exec rm '{}' \;
   mkdir "$tmp_dir/META-INF"
   echo "Manifest-Version: 1.0" > "$tmp_dir/META-INF/MANIFEST.MF"
@@ -52,15 +53,17 @@ makeJar()
 }
 
 if [ "$1" = "j" ]; then
+  cd "$SDIR"
   javac $(find starcom -name "*.java")
   javah -d $PDIR/linux64/ $(echo $PDIR/NativeAppIndicator | tr '/' '.')
 elif [ "$1" = "c" ]; then
   get_libs64
-  gcc $HEAD_JDK $HEAD_LINUX -shared -o $PDIR/linux64/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
+  gcc $HEAD_JDK $HEAD_LINUX -shared -o $SDIR/$PDIR/linux64/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $SDIR/$PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
 elif [ "$1" = "c32" ]; then
   get_libs32
-  gcc $HEAD_JDK $HEAD_LINUX -shared -o $PDIR/linux32/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
+  gcc $HEAD_JDK $HEAD_LINUX -shared -o $SDIR/$PDIR/linux32/libstarcom_gui_appindicator_NativeAppIndicator.so -fPIC $SDIR/$PDIR/linux64/starcom_gui_appindicator_NativeAppIndicator.c $LIBS_LINUX
 elif [ "$1" = "start" ]; then
+  cd "$SDIR"
   java $PDIR/test/TestAppIndicator
 elif [ "$1" = "jar" ]; then
   makeJar
