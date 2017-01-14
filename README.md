@@ -3,7 +3,7 @@ A Systray Icon for java that works on all Systems.
 
 ![Screenshot](doc/Screenshot001.png)
 
-Supported Operating Systems
+Supported Operating Systems:
 * Ms Win7 (java.awt.TrayIcon)
 * Mac OS (java.awt.TrayIcon, not tested)
 * Linux 32bit and 64bit (Gnome3,Kde,Unity,Lxde,...)
@@ -12,10 +12,10 @@ Supported Operating Systems
 An easy example is available here:
 * src_Desktop/src/starcom/gui/appindicator/test/TestAppIndicator.java
 * src_Android/src/starcom/gui/appindicator/test/TestAppIndicatorAndroid.java
-* You can also execute bin/JAppIndicator.jar
-* Or try out bin/JAppIndicator.apk on Android
+* You can also execute <b>bin/JAppIndicator.jar</b>
+* Or try out <b>bin/JAppIndicator.apk</b> on Android
 
-Features
+Features:
 * Tray icon
 * Simple menu, and submenus.
 * Fallback to SystemTray, if no AppIndicator supported on system.
